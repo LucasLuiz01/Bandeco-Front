@@ -6,13 +6,13 @@ import Links from "./Link";
 import Padding from "./Padding";
 import Navbar from "./Navbar";
 import Footer from "./Footer";
-import NenhumHabito from "./NenhumHabito";
+import NenhumMenu from "./NenhumMenu";
 import TextHH from "./TextHH";
 import Body from "./body";
 
 export {
   Button,
-  NenhumHabito,
+  NenhumMenu,
   Column,
   Input,
   Logo,

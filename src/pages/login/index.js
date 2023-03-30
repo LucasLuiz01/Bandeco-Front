@@ -12,6 +12,7 @@ import { BASE_URL } from "../../constants/url.js";
 export default function Login() {
   const [password, setPassWord] = useState("");
   const [ra, setRa] = useState("");
+  const localStorage = window.localStorage;
   const navigate = useNavigate();
   const { setLogin } = useContext(Context);
   const url = `${BASE_URL}/sign-up`
@@ -25,6 +26,7 @@ export default function Login() {
       console.log("sucesso", dados.data)
       console.log(dados)
       setLogin(dados.data.token, "dados aquiii")
+      localStorage.setItem('token', dados.data.token);
       navigate("/habitos")
     })
     promisse.catch((err)=>{

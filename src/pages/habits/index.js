@@ -1,5 +1,5 @@
 import Navbar from "../../components/Navbar";
-import { Padding, Footer, NenhumHabito, TextHH } from "../../components";
+import { Padding, Footer, NenhumMenu, TextHH } from "../../components";
 import { BASE_URL } from "../../constants/url";
 import styled from "styled-components";
 import { useState } from "react";
@@ -8,32 +8,41 @@ import Context from "../Context";
 import { useContext, useEffect } from "react";
 export default function Habits() {
   const { login } = useContext(Context);
+  const storedToken = localStorage.getItem('token');
   console.log(login, "DADOS AQUI")
   console.log("token", login)
   const [userCount, setUserCount] = useState({});
+  const [menu, setUserMenu] = useState({});
   useEffect(()=>{
-    console.log("OOOOOOOOI")
     const url = `${BASE_URL}/userCount`
     const promisse = axios.get(url, {
       headers:{
-        Authorization: `Bearer ${login}`
+        Authorization: `Bearer ${storedToken}`
       }
     }) 
     promisse.then((sucess)=> {
       setUserCount((sucess.data))
-      console.log("ooooooi", sucess.data)
     })
     promisse.catch((err)=> {
-      console.log("ERRRRRR", err.response.data)
+      console.log("Error", err.response.data)
     })
 
   }, [])
 
-  const [display, setDisplay] = useState("none");
   console.log("login", login);
 
-  function add() {
-    setDisplay("");
+  function add(dia) {
+    console.log(dia)
+    const urls = `${BASE_URL}/menu/${dia}`;
+    console.log(urls,"AQQQUI")
+    const promisse = axios.get(urls)
+    promisse.then((sucess)=> {
+      setUserMenu((sucess.data))
+      console.log(sucess.data)
+    })
+    promisse.catch((err)=> {
+      console.log("Error", err.response.data)
+    })
   }
   if(!userCount.userId){
     return (
@@ -50,7 +59,7 @@ export default function Habits() {
            <button onClick={add}>sexta-feira</button>{" "}
         </StyledAdd>  
         
-        <NenhumHabito />
+        <NenhumMenu />
         
         <Footer>
           <TextHH text={"user"} />
@@ -72,14 +81,14 @@ export default function Habits() {
         />
         <Padding size={"huge"} />
         <StyledAdd>
-           <button onClick={add}>segunda-feira</button>{" "}
-           <button onClick={add}>terca-feira</button>{" "}
-           <button onClick={add}>quarta-feira</button>{" "}
-           <button onClick={add}>quinta-feira</button>{" "}
-           <button onClick={add}>sexta-feira</button>{" "}
+           <button onClick={() => add('Segunda-Feira')}>Segunda-Feira</button>{" "}
+           <button onClick={() => add('Terca-Feira')}>Terca-Feira</button>{" "}
+           <button onClick={() => add('Quarta-Feira')}>Quarta-Feira</button>{" "}
+           <button onClick={() => add('Quinta-feira')}>Quinta-feira</button>{" "}
+           <button onClick={() => add('Sexta-Feira')}>Sexta-Feira</button>{" "}
         </StyledAdd>  
         
-        <NenhumHabito />
+        <NenhumMenu />
         
         <Footer>
           <TextHH text={userCount.User.name} />
