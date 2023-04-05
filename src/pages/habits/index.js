@@ -6,11 +6,9 @@ import { useState } from "react";
 import axios from "axios";
 import Context from "../Context";
 import { useContext, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 export default function Habits() {
-  const { login } = useContext(Context);
-  const navigate = useNavigate();
+  const { login, setNome } = useContext(Context);
   const storedToken = localStorage.getItem("token");
   console.log(login, "DADOS AQUI");
   console.log("token", login);
@@ -25,6 +23,7 @@ export default function Habits() {
     });
     promisse.then((sucess) => {
       setUserCount(sucess.data);
+      setNome(sucess.data)
     });
     promisse.catch((err) => {
       console.log("Error", err.response.data);

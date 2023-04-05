@@ -6,10 +6,11 @@ import Context from "./pages/Context";
 
 export default function App() {
   const[login, setLogin] = useState()
+  const[nome, setNome] = useState()
   const contextExport = {login, setLogin,}
   return (
     <>
-    <Context.Provider value={contextExport} >
+    <Context.Provider value={{login, setLogin, nome, setNome }} >
     <BrowserRouter>
       <GlobalStyle />
       <Routes>
