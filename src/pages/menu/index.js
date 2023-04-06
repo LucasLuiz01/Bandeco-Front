@@ -7,12 +7,10 @@ import axios from "axios";
 import Context from "../Context";
 import { useContext, useEffect } from "react";
 import { Link } from "react-router-dom";
-export default function Habits() {
-  const { login, setNome } = useContext(Context);
+export default function Menu() {
+  const { login } = useContext(Context);
   const localStorage = window.localStorage;
   const storedToken = localStorage.getItem("token");
-  console.log(login, "DADOS AQUI");
-  console.log("token", login);
   const [userCount, setUserCount] = useState({});
   const [userMenu, setUserMenu] = useState({});
   useEffect(() => {
@@ -130,7 +128,7 @@ export default function Habits() {
             <TextHH text={`R$ ${userCount.balance},00`} />
           </div>
           <div style={{ width: 136 }}>
-          <StyledLink to='/historico'>
+          <StyledLink to='/payment'>
             <TextHH text={"Adicionar saldo"} />
             </StyledLink>
           </div>
@@ -162,7 +160,7 @@ export default function Habits() {
             <TextHH text={"R$:00,00"} />
           </div>
           <div style={{ width: 136 }}>
-          <StyledLink to='/historico'>
+          <StyledLink to='/payment'>
             <TextHH text={"Adicionar saldo"} />
             </StyledLink>
           </div>
@@ -192,7 +190,7 @@ export default function Habits() {
             <TextHH text={`R$ ${userCount.balance},00`} />
           </div>
           <div style={{ width: 136 }}>
-          <StyledLink to='/historico'>
+          <StyledLink to='/payment'>
             <TextHH text={"Adicionar saldo"} />
             </StyledLink>
           </div>

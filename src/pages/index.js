@@ -1,7 +1,6 @@
-import Habits from "./habits";
-import Historic from "./historic";
-import Today from "./today";
+import Menu from "./menu";
+import Payment from "./payment";
 import Registration from "./registration";
 import Login from "./login";
 
-export { Habits, Historic, Today, Registration, Login };
+export { Menu, Payment, Registration, Login };

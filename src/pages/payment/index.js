@@ -13,7 +13,7 @@ import Context from "../Context";
 import Modal from 'react-modal';
 import { BASE_URL } from "../../constants/url";
 
-export default function Historic (){
+export default function Payment (){
   const [cardNumber, setCardNumber] = React.useState('');
   const [cardName, setCardName] = React.useState('');
   const [cardExpiry, setCardExpiry] = React.useState('');
@@ -67,7 +67,7 @@ export default function Historic (){
     const promisse = axios.put(url,data,config);
     promisse.then((sucess) => {
       setValueToAdd('');
-      navigate("/habitos")
+      navigate("/menu")
     });
     promisse.catch((err) => {
       console.log("Error", err.response.data);
@@ -112,13 +112,13 @@ export default function Historic (){
 
         <Footer>
           <div style={{ width: 136 }}>
-            <TextHH text={"oi"} />
+            <TextHH text={userCount.User.name} />
           </div>
           <div style={{ width: 136 }}>
-            <TextHH text={"R$ 00,00"} />
+            <TextHH text={`R$ ${userCount.balance},00`} />
           </div>
           <div style={{ width: 136 }}>
-          <StyledLink to='/habitos'>
+          <StyledLink to='/menu'>
             <TextHH text={"Voltar Menu"} />
             </StyledLink>
           </div>
@@ -156,13 +156,13 @@ export default function Historic (){
 </WalletContainer>
     <Footer>
           <div style={{ width: 136 }}>
-            <TextHH text={"oi"} />
+            <TextHH text={userCount.User.name} />
           </div>
           <div style={{ width: 136 }}>
-            <TextHH text={"R$ 00,00"} />
+            <TextHH text={`R$ ${userCount.balance},00`} />
           </div>
           <div style={{ width: 136 }}>
-          <StyledLink to='/habitos'>
+          <StyledLink to='/menu'>
             <TextHH text={"Voltar Menu"} />
             </StyledLink>
           </div>

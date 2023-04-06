@@ -18,6 +18,14 @@ export default function Login() {
   const url = `${BASE_URL}/sign-up`
   function login (e) {
     e.preventDefault()
+    if(ra.length!==6 ){
+      alert("Ra tem que ter 6 dígitos")
+      return
+    }
+    if( password.length < 4){
+      alert("Senha tem que ter no mínimo 4 dígitos")
+      return
+    }
     const promisse = axios.post(url, {
       ra: `${ra}`,
       password: `${password}`,
@@ -27,10 +35,11 @@ export default function Login() {
       console.log(dados)
       setLogin(dados.data.token, "dados aquiii")
       localStorage.setItem('token', dados.data.token);
-      navigate("/habitos")
+      navigate("/menu")
     })
     promisse.catch((err)=>{
       console.log(err.response.data)
+      alert(err.response.data.message)
     })
   }
   return (
@@ -55,7 +64,7 @@ export default function Login() {
       <Button text="Entrar" />
       </form>
       <Padding size="big" />
-      <Link to="/cadastro"> 
+      <Link to="/registration"> 
      <Links text="Não tem uma conta? Cadastre-se!" />
      </Link>
     </Column>
