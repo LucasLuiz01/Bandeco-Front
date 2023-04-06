@@ -9,6 +9,7 @@ import { useContext, useEffect } from "react";
 import { Link } from "react-router-dom";
 export default function Habits() {
   const { login, setNome } = useContext(Context);
+  const localStorage = window.localStorage;
   const storedToken = localStorage.getItem("token");
   console.log(login, "DADOS AQUI");
   console.log("token", login);
@@ -23,7 +24,7 @@ export default function Habits() {
     });
     promisse.then((sucess) => {
       setUserCount(sucess.data);
-      setNome(sucess.data)
+      localStorage.setItem('userInfo', JSON.stringify(sucess.data));
     });
     promisse.catch((err) => {
       console.log("Error", err.response.data);

@@ -1,6 +1,5 @@
 import Navbar from "../../components/Navbar";
-import { Padding, Footer, NenhumMenu, TextHH } from "../../components";
-import { BASE_URL } from "../../constants/url";
+import { Padding, Footer, TextHH } from "../../components";
 import Cards from 'react-credit-cards';
 import 'react-credit-cards/es/styles-compiled.css';
 import styled from "styled-components";
@@ -11,6 +10,8 @@ import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import React from 'react';
 import Context from "../Context";
+import Modal from 'react-modal';
+import { BASE_URL } from "../../constants/url";
 
 export default function Historic (){
   const [cardNumber, setCardNumber] = React.useState('');
@@ -18,26 +19,65 @@ export default function Historic (){
   const [cardExpiry, setCardExpiry] = React.useState('');
   const [cvv, setCvv] = React.useState('');
   const [focus, setFocus] = React.useState('');
-  const [saldo, setSaldo] = React.useState(0);
+  const userCount = JSON.parse(localStorage.getItem("userInfo"));
+  const storedToken = localStorage.getItem("token");
   const { login,nome } = useContext(Context);
-  console.log("NOME", nome);
-  const [balance, setBalance] = useState(0);
-  const [newBalance, setNewBalance] = useState(0);
-
-  const handleBalanceChange = (event) => {
-    setNewBalance(event.target.value);
+  console.log("User", userCount);
+  const [balance, setBalance] = useState(userCount.balance);
+  const [valueToAdd, setValueToAdd] = useState('');
+  const navigate = useNavigate();
+  const [showSummaryModal, setShowSummaryModal] = useState(false);
+  const [showCard, setShowCard]= useState(false)
+  const validation = cardNumber.length === 16 && cardName.length >= 3 && cardExpiry.length === 4 && cvv.length === 3;
+  const handleAddToWallet = (event) => {
+    event.preventDefault();
+    if (valueToAdd <= 0) {
+      alert("Insira um valor válido para continuar.");
+      return;
+    }
+    setShowSummaryModal(true);
   };
 
-  const handleAddBalance = () => {
-    setBalance((prevBalance) => prevBalance + parseInt(newBalance));
-    setNewBalance(0);
+  const handleValueChange = (event) => {
+    setValueToAdd(event.target.value);
   };
 
-  function submit(e){
-console.log("oi")
+  const handlePaymentContinue = () => {
+   // setBalance(balance + parseInt(valueToAdd));
+    setShowSummaryModal(false);
+    setShowCard(true)
+  };
+
+  const handlePaymentBack = () => {
+    setShowSummaryModal(false);
+    setValueToAdd('');
+  };
+  const config = {
+    headers: {
+      Authorization: `Bearer ${storedToken}`,
+    },
+  };
+  const data = {
+    id: userCount.id,
+    balance: parseInt(valueToAdd),
+  };
+  function submit(){
+    if(validation){
+      const url = `${BASE_URL}/userCount`;
+    const promisse = axios.put(url,data,config);
+    promisse.then((sucess) => {
+      setValueToAdd('');
+      navigate("/habitos")
+    });
+    promisse.catch((err) => {
+      console.log("Error", err.response.data);
+    });
+    }else{
+      alert("Prencha os dados corretamente")
+    }
   }
 
-  if(saldo!== 0){
+  if(showCard=== true){
     return (
         <div style={{ background: "#E5E5E5", height: "100vh" }}>
         <Navbar text={"Bandeco"} />
@@ -67,11 +107,12 @@ console.log("oi")
         </div>
 
       </CreditCardContainer>
-      <Button onClick={submit}>FINALIZAR PAGAMENTO</Button>
+      <Centralizar><Button onClick={submit}>FINALIZAR PAGAMENTO</Button></Centralizar>
+      
 
         <Footer>
           <div style={{ width: 136 }}>
-            <TextHH text={nome.User.name} />
+            <TextHH text={"oi"} />
           </div>
           <div style={{ width: 136 }}>
             <TextHH text={"R$ 00,00"} />
@@ -88,22 +129,34 @@ console.log("oi")
     return(  <div style={{ background: "#E5E5E5", height: "100vh" }}>
     <Navbar text={"Bandeco"} />
     <Padding size={"huge"} />
-    <Container>
-      <Text>Seu saldo atual: R${balance.toFixed(2)}</Text>
-      <Input
-        type="number"
-        min="0" step="1"
-        
-        placeholder="Digite o valor a ser adicionado"
-        value={newBalance}
-        onChange={handleBalanceChange}
-      />
-      <Buttons onClick={handleAddBalance}>Adicionar saldo</Buttons>
-      <Text>Seu novo saldo: R${(balance + parseInt(newBalance)).toFixed(2)}</Text>
-    </Container>
+    <WalletContainer>
+  <h2>Seu saldo atual é de R$ {balance}</h2>
+  <AddToWalletFormContainer onSubmit={handleAddToWallet}>
+    <Label>
+      Valor:
+      <Input type="number" value={valueToAdd} onChange={handleValueChange} />
+    </Label>
+    <Button type="submit">Continuar</Button>
+  </AddToWalletFormContainer>
+  <PaymentSummaryModalContainer
+    isOpen={showSummaryModal}
+    onRequestClose={() => setShowSummaryModal(false)}
+  >
+    <PaymentSummaryModalContent>
+      <PaymentSummaryLabel>Resumo do Pedido</PaymentSummaryLabel>
+      <PaymentSummaryValue>Valor: R$ {valueToAdd}</PaymentSummaryValue>
+      <PaymentSummaryValue>Seu novo saldo será de R$ {balance + parseInt(valueToAdd)}</PaymentSummaryValue>
+      <PaymentSummaryValue>Forma de pagamento: Cartão de Crédito</PaymentSummaryValue>
+      <PaymentSummaryButtonContainer>
+        <Button onClick={handlePaymentContinue}>Continuar</Button>
+        <Button onClick={handlePaymentBack}>Voltar</Button>
+      </PaymentSummaryButtonContainer>
+    </PaymentSummaryModalContent>
+  </PaymentSummaryModalContainer>
+</WalletContainer>
     <Footer>
           <div style={{ width: 136 }}>
-            <TextHH text={nome.User.name} />
+            <TextHH text={"oi"} />
           </div>
           <div style={{ width: 136 }}>
             <TextHH text={"R$ 00,00"} />
@@ -122,7 +175,8 @@ console.log("oi")
 
 const CreditCardContainer = styled.div`
   width:100%;
-  margin: 30px 0 0 0;
+ display: flex;
+ justify-content: center;
   
   .creditCardInfo {
     width:710px;
@@ -157,6 +211,10 @@ const CreditCardContainer = styled.div`
     }
   }
 `;
+const Centralizar = styled.div`
+display: flex;
+justify-content: center;
+`
 
 const Button = styled.button`
     border: none;
@@ -184,32 +242,93 @@ const StyledLink = styled(Link)`
     transform: translateY(-50%);
   }
 `;
-const Container = styled.div`
+const WalletContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top:50px;
+  h2{
+    font-family: "Lexend Deca";
+    font-style: normal;
+    font-weight: 400;
+    font-size: 15px;
+    line-height: 29px;
+    color: black;
+  }
+`;
+
+const AddToWalletFormContainer = styled.form`
   display: flex;
   flex-direction: column;
   align-items: center;
 `;
 
+const Label = styled.label`
+  margin-bottom: 1rem;
+  font-family: "Lexend Deca";
+    font-style: normal;
+    font-weight: 400;
+    font-size: 15px;
+    line-height: 29px;
+    color: black;
+`;
+
 const Input = styled.input`
-  border: 1px solid gray;
-  border-radius: 4px;
-  padding: 8px;
-  margin-bottom: 16px;
+  padding: 0.5rem;
+  font-size: 1rem;
 `;
 
 const Buttons = styled.button`
-  background-color: #008CBA;
-  border: none;
-  color: white;
-  padding: 12px 24px;
-  text-align: center;
-  text-decoration: none;
-  display: inline-block;
-  font-size: 16px;
-  margin: 4px 2px;
-  cursor: pointer;
+  padding: 0.5rem 1rem;
+  margin-top: 1rem;
+  font-size: 1rem;
 `;
 
-const Text = styled.p`
-  font-size: 18px;
+const PaymentSummaryModalContainer = styled(Modal)`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(0, 0, 0, 0.3);
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+`;
+
+const PaymentSummaryModalContent = styled.div`
+  background-color: white;
+  padding: 2rem;
+  border-radius: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`;
+
+const PaymentSummaryLabel = styled.h2`
+  margin-bottom: 1rem;
+  font-family: "Lexend Deca";
+    font-style: normal;
+    font-weight: 600;
+    font-size: 18.976px;
+    line-height: 29px;
+    color: black;
+`;
+
+const PaymentSummaryValue = styled.p`
+  margin: 0.5rem 0;
+  font-family: "Lexend Deca";
+    font-style: normal;
+    font-weight: 600;
+    font-size: 18.976px;
+    line-height: 29px;
+    color: black;
+`;
+
+const PaymentSummaryButtonContainer = styled.div`
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  margin-top: 1rem;
 `;
