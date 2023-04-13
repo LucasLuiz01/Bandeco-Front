@@ -60,7 +60,7 @@ export default function Menu() {
       (objeto) => objeto.isVeg === true && objeto.isDinner === true
     );
     return (
-      <div style={{ background: "#E5E5E5", height: "100%" }}>
+      <div style={{ background: "#E5E5E5", height: "100%", minWidth:700 }}>
         <Navbar text={"Bandeco"} h1={`${userMenu[0].date} `}/>
         <Padding size={"huge"} />
         <StyledAdd>
@@ -169,7 +169,7 @@ export default function Menu() {
     );
   } else {
     return (
-      <div style={{ background: "#E5E5E5", height: "100vh" }}>
+      <div style={{ background: "#E5E5E5", height: "100vh", minWidth:700 }}>
         <Navbar text={"Bandeco"} />
         <Padding size={"huge"} />
         <StyledAdd>
@@ -209,6 +209,7 @@ const StyledMenu = styled.div`
   display: flex;
   justify-content: space-between;
   margin-top: 20px;
+  min-width: 700px;
 `;
 const StyledDay = styled.div`
   width: 50%;
@@ -251,6 +252,7 @@ const StyledBox = styled.div`
 const StyledAdd = styled.div`
   height: 85px;
   width: 100%;
+  min-width: 600;
   display: flex;
   justify-content: space-evenly;
   align-items: center;

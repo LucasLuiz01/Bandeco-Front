@@ -79,7 +79,7 @@ export default function Payment (){
 
   if(showCard=== true){
     return (
-        <div style={{ background: "#E5E5E5", height: "100vh" }}>
+        <div style={{ background: "#E5E5E5", height: "100vh", minWidth:860}}>
         <Navbar text={"Bandeco"} />
         <Padding size={"huge"} />
     
@@ -177,6 +177,8 @@ const CreditCardContainer = styled.div`
   width:100%;
  display: flex;
  justify-content: center;
+ min-width: 860px;
+ overflow: auto;
   
   .creditCardInfo {
     width:710px;
@@ -211,6 +213,8 @@ const CreditCardContainer = styled.div`
     }
   }
 `;
+
+
 const Centralizar = styled.div`
 display: flex;
 justify-content: center;
